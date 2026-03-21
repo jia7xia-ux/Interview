@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面经库 · 求职面试管理</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F2EC;--surface:#FDFCF8;--surface2:#F0EDE5;
+  --border:#DDD9CF;--border-light:#E8E4DB;
+  --text:#1A1814;--text-muted:#7A756A;--text-hint:#B0AA9F;
+  --accent:#2B5CE6;--accent-light:#EBF0FD;
+  --green:#1A7A4A;--green-light:#D1FAE5;
+  --amber:#92400E;--amber-light:#FEF3C7;
+  --red:#991B1B;--red-light:#FEE2E2;
+  --purple:#6B21A8;--purple-light:#F3E8FF;
+  --mono:'DM Mono',monospace;--serif:'Noto Serif SC',serif;--sans:'Plus Jakarta Sans',sans-serif;
+  --radius:10px;--radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:50}
+.logo{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.logo-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;display:inline-block}
+.header-right{display:flex;align-items:center;gap:10px}
+
+/* LAYOUT */
+.container{max-width:1140px;margin:0 auto;padding:2rem 1.5rem}
+
+/* TABS */
+.tabs{display:flex;margin-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.tab{padding:8px 20px;font-size:13px;font-family:var(--sans);font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:14px 16px}
+.stat-label{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.stat-val{font-size:26px;font-weight:600;font-family:var(--mono);color:var(--text);line-height:1}
+.stat-val.blue{color:var(--accent)}.stat-val.green{color:var(--green)}.stat-val.amber{color:#B45309}.stat-val.red{color:#C1391A}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+.search-wrap{flex:1;min-width:200px;position:relative}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-hint);pointer-events:none}
+input[type=text],input[type=date],select,textarea{font-family:var(--sans);font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);outline:none;transition:border-color .15s}
+input[type=text]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.search-input{width:100%;height:36px;padding:0 12px 0 34px}
+.filter-select{height:36px;padding:0 10px;cursor:pointer}
+
+/* BUTTONS */
+.btn{height:36px;padding:0 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:#1E4DD4;border-color:#1E4DD4}
+.btn-sm{height:28px;padding:0 10px;font-size:11px;border-radius:6px}
+.btn-ghost{background:transparent;border-color:var(--border-light);color:var(--text-muted)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);border-color:var(--border)}
+
+/* MIANJING CARDS */
+.cards{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:1rem 1.25rem;transition:border-color .15s,box-shadow .15s;animation:fadeIn .2s ease}
+.card:hover{border-color:var(--border);box-shadow:var(--shadow)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.card-title{font-size:14px;font-weight:600;line-height:1.45;flex:1}
+.card-title a{color:inherit;text-decoration:none}
+.card-title a:hover{text-decoration:underline;color:var(--accent)}
+.badge{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px;font-weight:500;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.badge-xhs{background:#FDEEE9;color:#C1391A}
+.badge-bilibili{background:#E8F0FE;color:#1A56C8}
+.badge-zhihu{background:#E6F4FF;color:#0066CC}
+.badge-other{background:var(--surface2);color:var(--text-muted)}
+.card-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-muted);margin-bottom:8px;flex-wrap:wrap}
+.status-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:100px;font-weight:500}
+.st-pending{background:#F3F0E8;color:#6B6559}
+.st-applied{background:var(--accent-light);color:#2B5CE6}
+.st-interviewing{background:var(--amber-light);color:var(--amber)}
+.st-offer{background:var(--green-light);color:var(--green)}
+.st-rejected{background:var(--red-light);color:var(--red)}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font-size:11px;padding:2px 8px;border-radius:100px;border:1px solid var(--border-light);background:var(--bg);color:var(--text-muted)}
+.tag.skill{background:var(--accent-light);color:var(--accent);border-color:#C3D4FB}
+.note-box{font-size:12px;color:var(--text-muted);background:var(--bg);border-radius:8px;padding:8px 10px;line-height:1.7;border-left:2px solid var(--border);margin-bottom:6px}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)}
+.date-txt{font-size:11px;color:var(--text-hint);font-family:var(--mono)}
+.action-row{display:flex;gap:6px}
+.action-btn{font-size:11px;padding:3px 10px;border:1px solid var(--border-light);border-radius:6px;background:transparent;color:var(--text-muted);cursor:pointer;font-family:var(--sans);transition:all .12s}
+.action-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border)}
+.action-btn.del:hover{background:var(--red-light);color:var(--red);border-color:#FCA5A5}
+
+/* MY INTERVIEWS — KANBAN */
+.kanban{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:start}
+.kb-col{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:12px;min-height:140px}
+.kb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border-light)}
+.kb-title{font-size:12px;font-weight:600;color:var(--text-muted);font-family:var(--mono)}
+.kb-count{font-size:10px;font-family:var(--mono);padding:1px 6px;border-radius:100px;background:var(--bg);color:var(--text-muted);border:1px solid var(--border-light)}
+.kb-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:10px;margin-bottom:7px;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.kb-card:hover{box-shadow:var(--shadow);border-color:var(--border)}
+.kb-card-company{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.kb-card-role{font-size:11px;color:var(--text-muted);margin-bottom:6px}
+.kb-card-icons{display:flex;gap:5px;flex-wrap:wrap}
+.kb-icon-pill{font-size:10px;padding:1px 6px;border-radius:100px;border:1px solid var(--border-light);background:var(--bg);color:var(--text-muted);display:inline-flex;align-items:center;gap:3px}
+.kb-icon-pill.has-rec{background:#FEF3C7;color:#92400E;border-color:#FCD34D}
+.kb-icon-pill.has-cv{background:var(--accent-light);color:var(--accent);border-color:#C3D4FB}
+.kb-icon-pill.has-q{background:var(--purple-light);color:var(--purple);border-color:#D8B4FE}
+
+/* MY INTERVIEWS — DETAIL MODAL */
+.imodal{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:0;width:min(680px,96vw);max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);animation:slideUp .2s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.imodal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border-light);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0}
+.imodal-header-left{flex:1;min-width:0}
+.imodal-company{font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.3}
+.imodal-role{font-size:13px;color:var(--text-muted);margin-top:2px}
+.imodal-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:1.25rem}
+.imodal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+
+/* sections inside interview modal */
+.isection{background:var(--bg);border-radius:var(--radius);padding:1rem 1.1rem}
+.isection-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.isection-title{font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);font-weight:500}
+
+/* recording link */
+.rec-link{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);font-size:13px}
+.rec-link a{color:var(--accent);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.rec-link a:hover{text-decoration:underline}
+.rec-icon{font-size:15px;flex-shrink:0}
+.rec-empty{font-size:13px;color:var(--text-hint);padding:4px 0}
+
+/* resume versions */
+.cv-list{display:flex;flex-direction:column;gap:6px}
+.cv-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius)}
+.cv-name{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cv-link{font-size:12px;color:var(--accent);text-decoration:none;white-space:nowrap}
+.cv-link:hover{text-decoration:underline}
+.cv-del{background:none;border:none;cursor:pointer;color:var(--text-hint);font-size:14px;padding:2px 4px;border-radius:4px;line-height:1}
+.cv-del:hover{color:var(--red);background:var(--red-light)}
+.cv-add-row{display:flex;gap:6px;margin-top:6px}
+.cv-add-row input{height:32px;padding:0 10px;font-size:12px;flex:1}
+.cv-add-row .btn{height:32px;font-size:12px}
+
+/* prep questions */
+.q-list{display:flex;flex-direction:column;gap:5px}
+.q-item{display:flex;align-items:flex-start;gap:8px;padding:7px 8px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);transition:opacity .15s}
+.q-item.done{opacity:.5}
+.q-item.done .q-text{text-decoration:line-through;color:var(--text-hint)}
+.q-check{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-top:2px}
+.q-text{font-size:13px;flex:1;line-height:1.5;word-break:break-all}
+.q-del{background:none;border:none;cursor:pointer;color:var(--text-hint);font-size:13px;padding:2px 4px;border-radius:4px;flex-shrink:0;line-height:1}
+.q-del:hover{color:var(--red);background:var(--red-light)}
+.q-add-row{display:flex;gap:6px;margin-top:6px}
+.q-add-row input{height:32px;padding:0 10px;font-size:12px;flex:1}
+.q-add-row .btn{height:32px;font-size:12px;white-space:nowrap}
+.q-progress{font-size:11px;font-family:var(--mono);color:var(--text-hint)}
+
+/* note inline edit */
+.note-edit-area{width:100%;min-height:72px;padding:8px 10px;resize:none;line-height:1.7;font-size:13px}
+
+/* SKILLS */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.skill-section-title{font-size:11px;font-family:var(--mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.skill-bar-item{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.skill-bar-label{font-size:13px;color:var(--text);min-width:100px}
+.skill-bar-track{flex:1;height:6px;background:var(--surface2);border-radius:100px;overflow:hidden}
+.skill-bar-fill{height:100%;background:var(--accent);border-radius:100px;transition:width .6s ease}
+.skill-bar-count{font-size:11px;font-family:var(--mono);color:var(--text-hint);min-width:18px;text-align:right}
+.company-list-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border-light);margin-bottom:6px}
+.company-name{font-size:13px;font-weight:600}
+.company-count-badge{font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:100px;background:var(--accent-light);color:var(--accent)}
+
+/* RECRUIT */
+.recruit-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.alert-banner{display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid #FCD34D;border-radius:var(--radius);padding:10px 14px;margin-bottom:1.25rem;font-size:13px;color:#78350F;line-height:1.5}
+.alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.rcard{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:1rem 1.25rem;transition:border-color .15s,box-shadow .15s;animation:fadeIn .2s ease;margin-bottom:8px}
+.rcard:hover{border-color:var(--border);box-shadow:var(--shadow)}
+.rcard-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.rcard-title{font-size:14px;font-weight:600;line-height:1.45;flex:1;color:var(--text)}
+.rcard-title a{color:inherit;text-decoration:none}
+.rcard-title a:hover{text-decoration:underline;color:var(--accent)}
+.rtype-badge{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px;font-weight:500;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.rt-recruit{background:var(--accent-light);color:#1E4DD4}
+.rt-info{background:var(--green-light);color:var(--green)}
+.rt-presentation{background:var(--purple-light);color:var(--purple)}
+.rstatus-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);padding:3px 9px;border-radius:100px;font-weight:500}
+.rs-upcoming{background:var(--accent-light);color:#1E4DD4}
+.rs-open{background:var(--green-light);color:var(--green)}
+.rs-closing{background:var(--amber-light);color:var(--amber)}
+.rs-closed{background:#F3F4F6;color:#6B7280}
+.rcard-meta{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text-muted);margin-bottom:8px;flex-wrap:wrap}
+.countdown{font-family:var(--mono);font-size:12px;font-weight:500}
+.countdown.urgent{color:#C1391A}.countdown.soon{color:#B45309}.countdown.ok{color:var(--green)}.countdown.closed{color:var(--text-hint)}
+.timeline-dots{display:flex;align-items:center;margin:8px 0;font-size:11px}
+.tdot-circle{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);flex-shrink:0}
+.tdot-circle.filled{background:var(--accent);border-color:var(--accent)}
+.tdot-circle.active{background:#F59E0B;border-color:#F59E0B}
+.tdot-line{flex:1;height:1px;background:var(--border-light);min-width:16px}
+.tdot-label{font-size:11px;color:var(--text-muted);padding:0 6px;white-space:nowrap}
+.rcard-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)}
+
+/* SHARED MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,24,20,.45);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:1.5rem;width:min(520px,95vw);max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:slideUp .2s ease}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.modal-title{font-size:16px;font-weight:600;font-family:var(--serif)}
+.close-btn{width:28px;height:28px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:18px;line-height:1;font-family:var(--sans)}
+.close-btn:hover{background:var(--surface2)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-family:var(--mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.field input[type=text],.field input[type=date],.field select,.field textarea{width:100%;height:36px;padding:0 12px}
+.field textarea{height:72px;padding:8px 12px;resize:none;line-height:1.6}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-light)}
+.section-divider{font-size:11px;font-family:var(--mono);color:var(--text-hint);text-transform:uppercase;letter-spacing:.08em;margin:4px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border-light)}
+.empty{text-align:center;padding:3rem 1rem;color:var(--text-hint);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:8px}
+
+@media(max-width:768px){
+  header{padding:0 1rem}
+  .container{padding:1.25rem 1rem}
+  .stats,.recruit-stats{grid-template-columns:repeat(2,1fr)}
+  .kanban{grid-template-columns:repeat(2,1fr)}
+  .skills-grid,.field-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="logo-dot"></span>面经库</div>
+  <div class="header-right" id="headerBtn">
+    <button class="btn btn-primary" onclick="openMianjingModal()">+ 添加面经</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('list',this)">收藏面经</button>
+    <button class="tab" onclick="switchTab('myinterview',this)">我的面试</button>
+    <button class="tab" onclick="switchTab('skills',this)">技能分析</button>
+    <button class="tab" onclick="switchTab('recruit',this)">招聘动态</button>
+  </div>
+
+  <!-- 收藏面经 -->
+  <div id="viewList">
+    <div class="stats">
+      <div class="stat"><div class="stat-label">收藏总数</div><div class="stat-val" id="statTotal">0</div></div>
+      <div class="stat"><div class="stat-label">面试中</div><div class="stat-val amber" id="statInterview">0</div></div>
+      <div class="stat"><div class="stat-label">已拿 Offer</div><div class="stat-val green" id="statOffer">0</div></div>
+      <div class="stat"><div class="stat-label">覆盖公司</div><div class="stat-val blue" id="statCompanies">0</div></div>
+    </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="搜索标题、公司、技能…" oninput="render()">
+      </div>
+      <select class="filter-select" id="filterCompany" onchange="render()"><option value="">所有公司</option></select>
+      <select class="filter-select" id="filterRole" onchange="render()"><option value="">所有岗位</option></select>
+      <select class="filter-select" id="filterStatus" onchange="render()">
+        <option value="">所有状态</option>
+        <option value="pending">待投递</option><option value="applied">已投递</option>
+        <option value="interviewing">面试中</option><option value="offer">已拿Offer</option><option value="rejected">已凉</option>
+      </select>
+    </div>
+    <div class="cards" id="cardList"></div>
+  </div>
+
+  <!-- 我的面试 -->
+  <div id="viewMyinterview" style="display:none">
+    <div class="stats">
+      <div class="stat"><div class="stat-label">面试记录</div><div class="stat-val" id="istatTotal">0</div></div>
+      <div class="stat"><div class="stat-label">进行中</div><div class="stat-val amber" id="istatActive">0</div></div>
+      <div class="stat"><div class="stat-label">已拿 Offer</div><div class="stat-val green" id="istatOffer">0</div></div>
+      <div class="stat"><div class="stat-label">含录音记录</div><div class="stat-val blue" id="istatRec">0</div></div>
+    </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" type="text" id="iSearchInput" placeholder="搜索公司、岗位…" oninput="renderKanban()">
+      </div>
+      <select class="filter-select" id="iFilterStatus" onchange="renderKanban()">
+        <option value="">所有状态</option>
+        <option value="pending">待投递</option><option value="applied">已投递</option>
+        <option value="interviewing">面试中</option><option value="offer">已拿Offer</option><option value="rejected">已凉</option>
+      </select>
+    </div>
+    <div class="kanban" id="kanbanBoard"></div>
+  </div>
+
+  <!-- 技能分析 -->
+  <div id="viewSkills" style="display:none">
+    <div class="skills-grid">
+      <div><div class="skill-section-title">高频技能 Top 10</div><div id="skillBars"></div></div>
+      <div><div class="skill-section-title">公司收藏排名</div><div id="companyList"></div></div>
+    </div>
+  </div>
+
+  <!-- 招聘动态 -->
+  <div id="viewRecruit" style="display:none">
+    <div class="recruit-stats">
+      <div class="stat"><div class="stat-label">动态总数</div><div class="stat-val" id="rstatTotal">0</div></div>
+      <div class="stat"><div class="stat-label">进行中</div><div class="stat-val green" id="rstatOpen">0</div></div>
+      <div class="stat"><div class="stat-label">即将开始</div><div class="stat-val blue" id="rstatUpcoming">0</div></div>
+      <div class="stat"><div class="stat-label">即将截止</div><div class="stat-val red" id="rstatClosing">0</div></div>
+    </div>
+    <div id="urgentBanner"></div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" type="text" id="rSearchInput" placeholder="搜索公司、岗位…" oninput="renderRecruit()">
+      </div>
+      <select class="filter-select" id="rFilterType" onchange="renderRecruit()">
+        <option value="">所有类型</option>
+        <option value="recruit">招聘开放</option><option value="presentation">宣讲会</option><option value="info">招聘信息</option>
+      </select>
+      <select class="filter-select" id="rFilterStatus" onchange="renderRecruit()">
+        <option value="">所有状态</option>
+        <option value="upcoming">未开始</option><option value="open">进行中</option>
+        <option value="closing">即将截止</option><option value="closed">已结束</option>
+      </select>
+    </div>
+    <div id="recruitList"></div>
+  </div>
+</div>
+
+<!-- 面经 Modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">添加面经</div>
+      <button class="close-btn" onclick="closeModal('modalBg')">×</button>
+    </div>
+    <div class="field"><label>链接 URL</label><input type="text" id="fUrl" placeholder="https://www.xiaohongshu.com/..."></div>
+    <div class="field"><label>标题</label><input type="text" id="fTitle" placeholder="例：字节跳动后端实习面经 2025春招"></div>
+    <div class="field-row">
+      <div class="field"><label>来源平台</label>
+        <select id="fPlatform"><option value="xhs">小红书</option><option value="bilibili">B站</option><option value="zhihu">知乎</option><option value="other">其他</option></select>
+      </div>
+      <div class="field"><label>投递状态</label>
+        <select id="fStatus"><option value="pending">待投递</option><option value="applied">已投递</option><option value="interviewing">面试中</option><option value="offer">已拿 Offer</option><option value="rejected">已凉</option></select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>公司</label><input type="text" id="fCompany" placeholder="例：字节跳动"></div>
+      <div class="field"><label>岗位</label><input type="text" id="fRole" placeholder="例：后端开发实习"></div>
+    </div>
+    <div class="field"><label>技能标签（逗号分隔）</label><input type="text" id="fSkills" placeholder="例：Java, Spring Boot, MySQL"></div>
+    <div class="field"><label>备注</label><textarea id="fNote" placeholder="面试轮次、考察重点、个人总结…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalBg')">取消</button>
+      <button class="btn btn-primary" onclick="saveMianjing()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 我的面试 — 新建/编辑基础信息 Modal -->
+<div class="modal-bg" id="iEditBg">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="iEditTitle">新建面试记录</div>
+      <button class="close-btn" onclick="closeModal('iEditBg')">×</button>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>公司</label><input type="text" id="iCompany" placeholder="例：字节跳动"></div>
+      <div class="field"><label>岗位</label><input type="text" id="iRole" placeholder="例：后端开发实习"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>面试轮次</label><input type="text" id="iRound" placeholder="例：一面、HR面"></div>
+      <div class="field"><label>状态</label>
+        <select id="iStatus"><option value="pending">待投递</option><option value="applied">已投递</option><option value="interviewing">面试中</option><option value="offer">已拿 Offer</option><option value="rejected">已凉</option></select>
+      </div>
+    </div>
+    <div class="field"><label>面试日期</label><input type="date" id="iDate"></div>
+    <div class="field"><label>备注</label><textarea id="iNote" placeholder="面试整体感受、复盘总结…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('iEditBg')">取消</button>
+      <button class="btn btn-primary" onclick="saveInterview()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 我的面试 — 详情 Modal -->
+<div class="modal-bg" id="iDetailBg">
+  <div class="imodal">
+    <div class="imodal-header">
+      <div class="imodal-header-left">
+        <div class="imodal-company" id="idCompany"></div>
+        <div class="imodal-role" id="idRole"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <span class="status-pill" id="idStatusPill"></span>
+        <button class="btn btn-sm btn-ghost" onclick="editInterviewBasic()">编辑</button>
+        <button class="close-btn" onclick="closeModal('iDetailBg')">×</button>
+      </div>
+    </div>
+
+    <div class="imodal-body">
+
+      <!-- 录音 -->
+      <div class="isection">
+        <div class="isection-header">
+          <div class="isection-title">🎙 面试录音</div>
+          <button class="btn btn-sm btn-ghost" onclick="toggleRecEdit()">编辑链接</button>
+        </div>
+        <div id="recDisplay"></div>
+        <div id="recEditRow" style="display:none;margin-top:8px">
+          <div style="display:flex;gap:6px">
+            <input type="text" id="recUrlInput" placeholder="飞书录音 / 腾讯会议回放链接…" style="flex:1;height:34px;padding:0 10px;font-size:13px">
+            <button class="btn btn-sm btn-primary" onclick="saveRecUrl()">保存</button>
+            <button class="btn btn-sm btn-ghost" onclick="toggleRecEdit()">取消</button>
+          </div>
+          <div style="font-size:11px;color:var(--text-hint);margin-top:4px">支持飞书文档、腾讯会议、Zoom 等任意录音/回放链接</div>
+        </div>
+      </div>
+
+      <!-- 简历版本 -->
+      <div class="isection">
+        <div class="isection-header">
+          <div class="isection-title">📄 简历版本</div>
+          <span class="q-progress" id="cvCount"></span>
+        </div>
+        <div class="cv-list" id="cvList"></div>
+        <div class="cv-add-row">
+          <input type="text" id="cvNameInput" placeholder="版本名称（如：技术岗简历-精简版）">
+          <input type="text" id="cvLinkInput" placeholder="链接（可选）">
+          <button class="btn btn-sm btn-primary" onclick="addCv()">+ 添加</button>
+        </div>
+      </div>
+
+      <!-- 面试题准备 -->
+      <div class="isection">
+        <div class="isection-header">
+          <div class="isection-title">❓ 面试题准备</div>
+          <span class="q-progress" id="qProgress"></span>
+        </div>
+        <div class="q-list" id="qList"></div>
+        <div class="q-add-row">
+          <input type="text" id="qInput" placeholder="添加一道准备题目…" onkeydown="if(event.key==='Enter')addQuestion()">
+          <button class="btn btn-sm btn-primary" onclick="addQuestion()">+ 添加</button>
+        </div>
+      </div>
+
+      <!-- 备注 -->
+      <div class="isection">
+        <div class="isection-header">
+          <div class="isection-title">📝 复盘备注</div>
+          <button class="btn btn-sm btn-ghost" id="noteSaveBtn" onclick="saveNote()" style="display:none">保存</button>
+        </div>
+        <textarea class="note-edit-area" id="noteArea" placeholder="面试整体感受、被问到的题目、下次改进点…" oninput="document.getElementById('noteSaveBtn').style.display='inline-flex'"></textarea>
+      </div>
+
+    </div>
+
+    <div class="imodal-footer">
+      <button class="btn btn-sm btn-ghost" style="color:var(--red);border-color:#FCA5A5" onclick="deleteInterview()">删除记录</button>
+      <span class="date-txt" id="idDate"></span>
+    </div>
+  </div>
+</div>
+
+<!-- 招聘动态 Modal -->
+<div class="modal-bg" id="rModalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="rModalTitle">添加招聘动态</div>
+      <button class="close-btn" onclick="closeModal('rModalBg')">×</button>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>类型</label>
+        <select id="rType"><option value="recruit">招聘开放</option><option value="presentation">宣讲会</option><option value="info">招聘信息</option></select>
+      </div>
+      <div class="field"><label>公司</label><input type="text" id="rCompany" placeholder="例：字节跳动"></div>
+    </div>
+    <div class="field"><label>标题 / 描述</label><input type="text" id="rTitle" placeholder="例：2026届秋招正式开放"></div>
+    <div class="field"><label>岗位方向</label><input type="text" id="rRole" placeholder="例：技术岗、产品岗、不限"></div>
+    <div class="section-divider">时间信息</div>
+    <div class="field-row">
+      <div class="field"><label>开始日期</label><input type="date" id="rStartDate"></div>
+      <div class="field"><label>截止日期</label><input type="date" id="rEndDate"></div>
+    </div>
+    <div class="field"><label>宣讲会时间地点</label><input type="text" id="rPresTime" placeholder="例：2025-09-10 19:00 武汉大学图书馆"></div>
+    <div class="section-divider">链接 &amp; 备注</div>
+    <div class="field"><label>原帖 / 报名链接</label><input type="text" id="rUrl" placeholder="https://…"></div>
+    <div class="field"><label>备注</label><textarea id="rNote" placeholder="投递渠道、内推码、注意事项…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('rModalBg')">取消</button>
+      <button class="btn btn-primary" onclick="saveRecruit()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY_MJ='mianjing_items_v1', KEY_IV='mianjing_interviews_v1', KEY_RC='mianjing_recruit_v1';
+const STATUS_META={pending:{label:'待投递',cls:'st-pending'},applied:{label:'已投递',cls:'st-applied'},interviewing:{label:'面试中',cls:'st-interviewing'},offer:{label:'已拿Offer',cls:'st-offer'},rejected:{label:'已凉',cls:'st-rejected'}};
+const PLAT_LABEL={xhs:'小红书',bilibili:'B站',zhihu:'知乎',other:'其他'};
+const RTYPE_META={recruit:{label:'招聘开放',cls:'rt-recruit'},presentation:{label:'宣讲会',cls:'rt-presentation'},info:{label:'招聘信息',cls:'rt-info'}};
+
+function dStr(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+
+const SAMPLE_MJ=[
+  {id:1,url:'https://www.xiaohongshu.com',title:'字节跳动后端实习面经 2025春招 · 三轮技术面全过',platform:'xhs',status:'offer',company:'字节跳动',role:'后端开发实习',skills:['Java','Spring Boot','MySQL','Redis','并发编程'],note:'三轮技术面，重点考了并发和数据库优化。',date:'2025-03-10'},
+  {id:2,url:'https://www.bilibili.com',title:'腾讯微信事业群 产品经理实习 面试经验分享',platform:'bilibili',status:'interviewing',company:'腾讯',role:'产品经理实习',skills:['用户调研','原型设计','数据分析','竞品分析'],note:'面试官很nice，重点问了用户增长案例。',date:'2025-02-22'},
+  {id:3,url:'https://www.zhihu.com',title:'阿里巴巴 前端实习 2025 OC',platform:'zhihu',status:'applied',company:'阿里巴巴',role:'前端开发实习',skills:['Vue','React','TypeScript','算法'],note:'投了简历，等待筛选中。',date:'2025-03-05'},
+  {id:4,url:'https://www.bilibili.com',title:'华为暑期实习 算法岗 机考+面试全流程',platform:'bilibili',status:'rejected',company:'华为',role:'算法工程师实习',skills:['Python','深度学习','LeetCode'],note:'机考三题只过了两题，凉了。',date:'2025-01-18'},
+  {id:5,url:'https://www.xiaohongshu.com',title:'美团 数据分析实习 两轮面经',platform:'xhs',status:'pending',company:'美团',role:'数据分析实习',skills:['SQL','Python','Excel','A/B测试'],note:'打算投，先收藏备用。',date:'2025-03-18'},
+];
+
+const SAMPLE_IV=[
+  {id:201,company:'字节跳动',role:'后端开发实习',round:'三面',status:'offer',date:'2025-03-08',recUrl:'https://example.feishu.cn/record/abc123',note:'整体发挥不错，并发那块答得比较流畅。下次要更主动展示项目亮点。',cvVersions:[{name:'技术岗简历-完整版',link:'https://example.feishu.cn/cv1'},{name:'技术岗简历-精简版',link:''}],questions:[{text:'说说 Java 线程池的核心参数',done:true},{text:'Redis 缓存穿透/击穿/雪崩区别',done:true},{text:'MySQL 索引失效的场景',done:false},{text:'介绍一个你最有成就感的项目',done:true}]},
+  {id:202,company:'腾讯',role:'产品经理实习',round:'一面',status:'interviewing',date:'2025-03-15',recUrl:'',note:'',cvVersions:[{name:'产品岗简历',link:'https://example.feishu.cn/cv2'}],questions:[{text:'如何设计微信读书的推荐算法',done:false},{text:'用户留存率下降，如何排查',done:false},{text:'说说你最近用过最好的产品体验',done:true}]},
+  {id:203,company:'阿里巴巴',role:'前端开发实习',round:'一面',status:'applied',date:'2025-03-20',recUrl:'',note:'',cvVersions:[],questions:[{text:'Virtual DOM 的作用和原理',done:false},{text:'手写 Promise.all',done:false},{text:'CSS 盒模型的两种模式',done:false}]},
+];
+
+const SAMPLE_RC=[
+  {id:101,type:'recruit',company:'字节跳动',title:'2026届秋招正式开放 · 技术/产品/运营全线',role:'技术、产品、运营',startDate:dStr(-5),endDate:dStr(30),presTime:'',url:'https://jobs.bytedance.com',note:'内推通道简历优先处理。',added:dStr(-5)},
+  {id:102,type:'presentation',company:'腾讯',title:'腾讯2026届校招武汉宣讲会',role:'技术岗',startDate:dStr(3),endDate:dStr(3),presTime:dStr(3)+' 19:00 武汉大学图书馆报告厅',url:'https://join.qq.com',note:'现场可直接投递简历，带好学生证。',added:dStr(-2)},
+  {id:103,type:'recruit',company:'阿里巴巴',title:'2026届暑期实习开放投递',role:'技术/产品',startDate:dStr(-10),endDate:dStr(5),presTime:'',url:'https://campus.alibaba.com',note:'截止日期快到了，抓紧投！',added:dStr(-10)},
+  {id:104,type:'info',company:'美团',title:'暑期实习预计4月开放',role:'不限',startDate:dStr(15),endDate:dStr(60),presTime:'',url:'',note:'根据往年规律预计4月中旬，先备好简历。',added:dStr(0)},
+];
+
+let items=[], interviews=[], recruits=[];
+let editMjId=null, editIvId=null, editRcId=null;
+let currentTab='list', currentIvId=null;
+
+function load(){
+  try{items=JSON.parse(localStorage.getItem(KEY_MJ)||'null')||[...SAMPLE_MJ];}catch(e){items=[...SAMPLE_MJ];}
+  try{interviews=JSON.parse(localStorage.getItem(KEY_IV)||'null')||[...SAMPLE_IV];}catch(e){interviews=[...SAMPLE_IV];}
+  try{recruits=JSON.parse(localStorage.getItem(KEY_RC)||'null')||[...SAMPLE_RC];}catch(e){recruits=[...SAMPLE_RC];}
+}
+function saveMJStore(){localStorage.setItem(KEY_MJ,JSON.stringify(items));}
+function saveIVStore(){localStorage.setItem(KEY_IV,JSON.stringify(interviews));}
+function saveRCStore(){localStorage.setItem(KEY_RC,JSON.stringify(recruits));}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function curIv(){return interviews.find(x=>x.id===currentIvId);}
+
+function switchTab(tab,el){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['List','Myinterview','Skills','Recruit'].forEach(v=>{
+    document.getElementById('view'+v).style.display=(tab===v.toLowerCase()?'block':'none');
+  });
+  const hb=document.getElementById('headerBtn');
+  if(tab==='myinterview') hb.innerHTML='<button class="btn btn-primary" onclick="openNewInterview()">+ 新建面试记录</button>';
+  else if(tab==='recruit') hb.innerHTML='<button class="btn btn-primary" onclick="openRecruitModal()">+ 添加招聘动态</button>';
+  else hb.innerHTML='<button class="btn btn-primary" onclick="openMianjingModal()">+ 添加面经</button>';
+  render();
+}
+
+function render(){
+  if(currentTab==='list') renderList();
+  if(currentTab==='myinterview') renderKanban();
+  if(currentTab==='skills') renderSkills();
+  if(currentTab==='recruit') renderRecruit();
+}
+
+/* ── 收藏面经 ── */
+function renderList(){
+  const q=(document.getElementById('searchInput')||{value:''}).value.toLowerCase();
+  const fc=(document.getElementById('filterCompany')||{value:''}).value;
+  const fr=(document.getElementById('filterRole')||{value:''}).value;
+  const fs=(document.getElementById('filterStatus')||{value:''}).value;
+  const filtered=items.filter(x=>{
+    const mq=!q||x.title.toLowerCase().includes(q)||x.company.toLowerCase().includes(q)||x.role.toLowerCase().includes(q)||x.skills.some(s=>s.toLowerCase().includes(q));
+    return mq&&(!fc||x.company===fc)&&(!fr||x.role===fr)&&(!fs||x.status===fs);
+  });
+  const companies=[...new Set(items.map(x=>x.company))].sort();
+  const roles=[...new Set(items.map(x=>x.role))].sort();
+  const selC=document.getElementById('filterCompany'),selR=document.getElementById('filterRole');
+  const curC=selC.value,curR=selR.value;
+  selC.innerHTML='<option value="">所有公司</option>'+companies.map(c=>`<option value="${c}"${c===curC?' selected':''}>${c}</option>`).join('');
+  selR.innerHTML='<option value="">所有岗位</option>'+roles.map(r=>`<option value="${r}"${r===curR?' selected':''}>${r}</option>`).join('');
+  document.getElementById('statTotal').textContent=items.length;
+  document.getElementById('statInterview').textContent=items.filter(x=>x.status==='interviewing').length;
+  document.getElementById('statOffer').textContent=items.filter(x=>x.status==='offer').length;
+  document.getElementById('statCompanies').textContent=[...new Set(items.map(x=>x.company))].length;
+  const list=document.getElementById('cardList');
+  if(!filtered.length){list.innerHTML='<div class="empty"><div class="empty-icon">📭</div>没有找到匹配的面经</div>';return;}
+  list.innerHTML=filtered.map(x=>{
+    const sm=STATUS_META[x.status]||STATUS_META.pending;
+    const th=x.url?`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a>`:esc(x.title);
+    return`<div class="card">
+      <div class="card-top"><span class="badge badge-${x.platform}">${PLAT_LABEL[x.platform]||'其他'}</span><div class="card-title">${th}</div></div>
+      <div class="card-meta"><span>🏢 ${esc(x.company)}</span><span>💼 ${esc(x.role)}</span><span class="status-pill ${sm.cls}">${sm.label}</span></div>
+      ${x.skills.length?`<div class="tags">${x.skills.map(s=>`<span class="tag skill">${esc(s)}</span>`).join('')}</div>`:''}
+      ${x.note?`<div class="note-box">${esc(x.note)}</div>`:''}
+      <div class="card-footer"><span class="date-txt">${x.date}</span><div class="action-row">
+        <button class="action-btn" onclick="editMianjing(${x.id})">编辑</button>
+        <button class="action-btn del" onclick="deleteMianjing(${x.id})">删除</button>
+      </div></div></div>`;
+  }).join('');
+}
+
+function openMianjingModal(item){
+  editMjId=item?item.id:null;
+  document.getElementById('modalTitle').textContent=item?'编辑面经':'添加面经';
+  document.getElementById('fUrl').value=item?.url||'';
+  document.getElementById('fTitle').value=item?.title||'';
+  document.getElementById('fPlatform').value=item?.platform||'xhs';
+  document.getElementById('fStatus').value=item?.status||'pending';
+  document.getElementById('fCompany').value=item?.company||'';
+  document.getElementById('fRole').value=item?.role||'';
+  document.getElementById('fSkills').value=item?.skills?.join(', ')||'';
+  document.getElementById('fNote').value=item?.note||'';
+  document.getElementById('modalBg').classList.add('open');
+}
+function editMianjing(id){openMianjingModal(items.find(x=>x.id===id));}
+function deleteMianjing(id){if(confirm('确定删除？')){items=items.filter(x=>x.id!==id);saveMJStore();render();}}
+function saveMianjing(){
+  const title=document.getElementById('fTitle').value.trim();
+  if(!title){alert('请填写标题');return;}
+  const obj={url:document.getElementById('fUrl').value.trim(),title,platform:document.getElementById('fPlatform').value,status:document.getElementById('fStatus').value,company:document.getElementById('fCompany').value.trim(),role:document.getElementById('fRole').value.trim(),skills:document.getElementById('fSkills').value.split(',').map(s=>s.trim()).filter(Boolean),note:document.getElementById('fNote').value.trim()};
+  if(editMjId){const i=items.findIndex(x=>x.id===editMjId);items[i]={...items[i],...obj};}
+  else items.push({id:Date.now(),...obj,date:new Date().toISOString().slice(0,10)});
+  saveMJStore();closeModal('modalBg');render();
+}
+
+/* ── 我的面试 看板 ── */
+function renderKanban(){
+  const q=(document.getElementById('iSearchInput')||{value:''}).value.toLowerCase();
+  const fs=(document.getElementById('iFilterStatus')||{value:''}).value;
+  const filtered=interviews.filter(x=>{
+    const mq=!q||x.company.toLowerCase().includes(q)||x.role.toLowerCase().includes(q);
+    return mq&&(!fs||x.status===fs);
+  });
+  document.getElementById('istatTotal').textContent=interviews.length;
+  document.getElementById('istatActive').textContent=interviews.filter(x=>x.status==='interviewing').length;
+  document.getElementById('istatOffer').textContent=interviews.filter(x=>x.status==='offer').length;
+  document.getElementById('istatRec').textContent=interviews.filter(x=>x.recUrl).length;
+  const cols=['pending','applied','interviewing','offer','rejected'];
+  document.getElementById('kanbanBoard').innerHTML=cols.map(s=>{
+    const sm=STATUS_META[s];
+    const ci=filtered.filter(x=>x.status===s);
+    return`<div class="kb-col">
+      <div class="kb-header"><span class="kb-title">${sm.label}</span><span class="kb-count">${ci.length}</span></div>
+      ${ci.map(x=>{
+        const icons=[];
+        if(x.recUrl) icons.push(`<span class="kb-icon-pill has-rec">🎙 录音</span>`);
+        if(x.cvVersions?.length) icons.push(`<span class="kb-icon-pill has-cv">📄 ${x.cvVersions.length}份简历</span>`);
+        if(x.questions?.length){const done=x.questions.filter(q=>q.done).length;icons.push(`<span class="kb-icon-pill has-q">❓ ${done}/${x.questions.length}</span>`);}
+        return`<div class="kb-card" onclick="openDetail(${x.id})">
+          <div class="kb-card-company">${esc(x.company)}</div>
+          <div class="kb-card-role">${esc(x.role)}${x.round?' · '+esc(x.round):''}</div>
+          ${icons.length?`<div class="kb-card-icons">${icons.join('')}</div>`:''}
+        </div>`;
+      }).join('')}
+      ${!ci.length?'<div style="font-size:11px;color:var(--text-hint);text-align:center;padding:12px 0">暂无</div>':''}
+    </div>`;
+  }).join('');
+}
+
+/* ── 面试详情 ── */
+function openDetail(id){
+  currentIvId=id;
+  renderDetail();
+  document.getElementById('iDetailBg').classList.add('open');
+}
+function renderDetail(){
+  const iv=curIv();if(!iv)return;
+  const sm=STATUS_META[iv.status]||STATUS_META.pending;
+  document.getElementById('idCompany').textContent=iv.company;
+  document.getElementById('idRole').textContent=iv.role+(iv.round?' · '+iv.round:'')+(iv.date?' | '+iv.date:'');
+  document.getElementById('idStatusPill').className='status-pill '+sm.cls;
+  document.getElementById('idStatusPill').textContent=sm.label;
+  document.getElementById('idDate').textContent=iv.date?'面试日期 '+iv.date:'';
+  // recording
+  const recD=document.getElementById('recDisplay');
+  if(iv.recUrl){
+    recD.innerHTML=`<div class="rec-link"><span class="rec-icon">🎙</span><a href="${esc(iv.recUrl)}" target="_blank" rel="noopener">${esc(iv.recUrl)}</a></div>`;
+  } else {
+    recD.innerHTML='<div class="rec-empty">暂无录音链接 — 可将飞书、腾讯会议等录音链接粘贴至此</div>';
+  }
+  document.getElementById('recUrlInput').value=iv.recUrl||'';
+  document.getElementById('recEditRow').style.display='none';
+  // cv
+  renderCvList();
+  // questions
+  renderQList();
+  // note
+  document.getElementById('noteArea').value=iv.note||'';
+  document.getElementById('noteSaveBtn').style.display='none';
+}
+function renderCvList(){
+  const iv=curIv();if(!iv)return;
+  const cvs=iv.cvVersions||[];
+  document.getElementById('cvCount').textContent=cvs.length?cvs.length+'份':'';
+  document.getElementById('cvList').innerHTML=cvs.map((c,i)=>`
+    <div class="cv-item">
+      <span class="cv-name" title="${esc(c.name)}">${esc(c.name)}</span>
+      ${c.link?`<a class="cv-link" href="${esc(c.link)}" target="_blank" rel="noopener">打开 ↗</a>`:'<span style="font-size:12px;color:var(--text-hint)">无链接</span>'}
+      <button class="cv-del" onclick="deleteCv(${i})">×</button>
+    </div>`).join('');
+  document.getElementById('cvNameInput').value='';
+  document.getElementById('cvLinkInput').value='';
+}
+function renderQList(){
+  const iv=curIv();if(!iv)return;
+  const qs=iv.questions||[];
+  const done=qs.filter(q=>q.done).length;
+  document.getElementById('qProgress').textContent=qs.length?`${done} / ${qs.length} 已完成`:'';
+  document.getElementById('qList').innerHTML=qs.map((q,i)=>`
+    <div class="q-item${q.done?' done':''}">
+      <input type="checkbox" class="q-check" ${q.done?'checked':''} onchange="toggleQ(${i})">
+      <span class="q-text">${esc(q.text)}</span>
+      <button class="q-del" onclick="deleteQ(${i})">×</button>
+    </div>`).join('');
+  document.getElementById('qInput').value='';
+}
+
+function toggleRecEdit(){
+  const row=document.getElementById('recEditRow');
+  row.style.display=row.style.display==='none'?'block':'none';
+}
+function saveRecUrl(){
+  const iv=curIv();if(!iv)return;
+  iv.recUrl=document.getElementById('recUrlInput').value.trim();
+  saveIVStore();renderDetail();renderKanban();
+}
+function addCv(){
+  const iv=curIv();if(!iv)return;
+  const name=document.getElementById('cvNameInput').value.trim();
+  if(!name){alert('请填写版本名称');return;}
+  iv.cvVersions=iv.cvVersions||[];
+  iv.cvVersions.push({name,link:document.getElementById('cvLinkInput').value.trim()});
+  saveIVStore();renderCvList();renderKanban();
+}
+function deleteCv(i){
+  const iv=curIv();if(!iv)return;
+  iv.cvVersions.splice(i,1);saveIVStore();renderCvList();renderKanban();
+}
+function addQuestion(){
+  const iv=curIv();if(!iv)return;
+  const text=document.getElementById('qInput').value.trim();
+  if(!text)return;
+  iv.questions=iv.questions||[];
+  iv.questions.push({text,done:false});
+  saveIVStore();renderQList();renderKanban();
+}
+function toggleQ(i){
+  const iv=curIv();if(!iv)return;
+  iv.questions[i].done=!iv.questions[i].done;
+  saveIVStore();renderQList();renderKanban();
+}
+function deleteQ(i){
+  const iv=curIv();if(!iv)return;
+  iv.questions.splice(i,1);saveIVStore();renderQList();renderKanban();
+}
+function saveNote(){
+  const iv=curIv();if(!iv)return;
+  iv.note=document.getElementById('noteArea').value;
+  saveIVStore();document.getElementById('noteSaveBtn').style.display='none';
+}
+
+function editInterviewBasic(){
+  const iv=curIv();if(!iv)return;
+  openEditInterview(iv);
+}
+function openNewInterview(){editIvId=null;openEditInterview(null);}
+function openEditInterview(item){
+  editIvId=item?item.id:null;
+  document.getElementById('iEditTitle').textContent=item?'编辑基本信息':'新建面试记录';
+  document.getElementById('iCompany').value=item?.company||'';
+  document.getElementById('iRole').value=item?.role||'';
+  document.getElementById('iRound').value=item?.round||'';
+  document.getElementById('iStatus').value=item?.status||'interviewing';
+  document.getElementById('iDate').value=item?.date||new Date().toISOString().slice(0,10);
+  document.getElementById('iNote').value=item?.note||'';
+  document.getElementById('iEditBg').classList.add('open');
+}
+function saveInterview(){
+  const company=document.getElementById('iCompany').value.trim();
+  const role=document.getElementById('iRole').value.trim();
+  if(!company||!role){alert('请填写公司和岗位');return;}
+  const obj={company,role,round:document.getElementById('iRound').value.trim(),status:document.getElementById('iStatus').value,date:document.getElementById('iDate').value,note:document.getElementById('iNote').value.trim()};
+  if(editIvId){
+    const i=interviews.findIndex(x=>x.id===editIvId);
+    interviews[i]={...interviews[i],...obj};
+    currentIvId=editIvId;
+  } else {
+    const nw={id:Date.now(),...obj,recUrl:'',cvVersions:[],questions:[]};
+    interviews.push(nw);currentIvId=nw.id;
+  }
+  saveIVStore();closeModal('iEditBg');
+  if(currentTab==='myinterview'){renderKanban();if(document.getElementById('iDetailBg').classList.contains('open'))renderDetail();}
+}
+function deleteInterview(){
+  if(!confirm('确定删除这条面试记录？'))return;
+  interviews=interviews.filter(x=>x.id!==currentIvId);
+  saveIVStore();closeModal('iDetailBg');renderKanban();
+}
+
+/* ── 技能分析 ── */
+function renderSkills(){
+  const skillMap={},compMap={};
+  items.forEach(x=>{x.skills.forEach(s=>{skillMap[s]=(skillMap[s]||0)+1;});compMap[x.company]=(compMap[x.company]||0)+1;});
+  const skills=Object.entries(skillMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxS=skills[0]?.[1]||1;
+  document.getElementById('skillBars').innerHTML=skills.length?skills.map(([s,c])=>`<div class="skill-bar-item"><span class="skill-bar-label">${esc(s)}</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:${Math.round(c/maxS*100)}%"></div></div><span class="skill-bar-count">${c}</span></div>`).join(''):'<div style="color:var(--text-hint);font-size:13px">暂无数据</div>';
+  const comps=Object.entries(compMap).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('companyList').innerHTML=comps.length?comps.map(([c,n])=>`<div class="company-list-item"><span class="company-name">${esc(c)}</span><span class="company-count-badge">${n} 篇</span></div>`).join(''):'<div style="color:var(--text-hint);font-size:13px">暂无数据</div>';
+}
+
+/* ── 招聘动态 ── */
+function getRecruitStatus(r){
+  const now=new Date();now.setHours(0,0,0,0);
+  const start=r.startDate?new Date(r.startDate):null;
+  const end=r.endDate?new Date(r.endDate):null;
+  if(!start)return'info';
+  if(start>now)return'upcoming';
+  if(end){if(end<now)return'closed';if(Math.ceil((end-now)/864e5)<=7)return'closing';}
+  return'open';
+}
+function getDaysInfo(r){
+  const now=new Date();now.setHours(0,0,0,0);
+  const start=r.startDate?new Date(r.startDate):null;
+  const end=r.endDate?new Date(r.endDate):null;
+  if(!start)return{label:'',cls:'closed'};
+  if(start>now){const d=Math.ceil((start-now)/864e5);return{label:`${d}天后开始`,cls:'ok'};}
+  if(end){
+    if(end<now)return{label:'已截止',cls:'closed'};
+    const d=Math.ceil((end-now)/864e5);
+    if(d===0)return{label:'今日截止！',cls:'urgent'};
+    if(d<=3)return{label:`还剩${d}天`,cls:'urgent'};
+    if(d<=7)return{label:`还剩${d}天`,cls:'soon'};
+    return{label:`还剩${d}天`,cls:'ok'};
+  }
+  return{label:'进行中',cls:'ok'};
+}
+const RSTATUS_META={upcoming:{label:'未开始',cls:'rs-upcoming'},open:{label:'进行中',cls:'rs-open'},closing:{label:'即将截止',cls:'rs-closing'},closed:{label:'已结束',cls:'rs-closed'},info:{label:'待确认',cls:'rs-upcoming'}};
+
+function renderRecruit(){
+  const q=(document.getElementById('rSearchInput')||{value:''}).value.toLowerCase();
+  const ft=(document.getElementById('rFilterType')||{value:''}).value;
+  const fs=(document.getElementById('rFilterStatus')||{value:''}).value;
+  const ws=recruits.map(r=>({...r,_s:getRecruitStatus(r)}));
+  document.getElementById('rstatTotal').textContent=recruits.length;
+  document.getElementById('rstatOpen').textContent=ws.filter(r=>r._s==='open').length;
+  document.getElementById('rstatUpcoming').textContent=ws.filter(r=>r._s==='upcoming').length;
+  document.getElementById('rstatClosing').textContent=ws.filter(r=>r._s==='closing').length;
+  const urgent=ws.filter(r=>r._s==='closing');
+  document.getElementById('urgentBanner').innerHTML=urgent.length?`<div class="alert-banner"><span class="alert-icon">⏰</span><span><strong>即将截止：</strong>${urgent.map(r=>`<strong>${esc(r.company)}</strong> ${getDaysInfo(r).label}`).join('，')}</span></div>`:'';
+  const order={closing:0,open:1,upcoming:2,info:3,closed:4};
+  const filtered=ws.filter(r=>{
+    const mq=!q||r.title.toLowerCase().includes(q)||r.company.toLowerCase().includes(q)||(r.role||'').toLowerCase().includes(q);
+    return mq&&(!ft||r.type===ft)&&(!fs||r._s===fs);
+  }).sort((a,b)=>(order[a._s]??3)-(order[b._s]??3));
+  const list=document.getElementById('recruitList');
+  if(!filtered.length){list.innerHTML='<div class="empty"><div class="empty-icon">📋</div>暂无招聘动态，点击右上角添加</div>';return;}
+  list.innerHTML=filtered.map(r=>{
+    const tm=RTYPE_META[r.type]||RTYPE_META.info;
+    const sm=RSTATUS_META[r._s]||RSTATUS_META.info;
+    const di=getDaysInfo(r);
+    const th=r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>`:esc(r.title);
+    const startPast=r.startDate&&new Date(r.startDate)<=new Date();
+    const endPast=r.endDate&&new Date(r.endDate)<new Date();
+    const tlHtml=r.startDate||r.endDate?`<div class="timeline-dots">
+      <div class="tdot-circle ${startPast?'filled':''}"></div>
+      <div class="tdot-line"></div>
+      <span class="tdot-label">${r.startDate||'?'} → ${r.endDate||'持续'}</span>
+      <div class="tdot-line"></div>
+      <div class="tdot-circle ${endPast?'filled':r._s==='open'||r._s==='closing'?'active':''}"></div>
+    </div>`:'';
+    return`<div class="rcard">
+      <div class="rcard-top"><span class="rtype-badge ${tm.cls}">${tm.label}</span><div class="rcard-title">${th}</div></div>
+      <div class="rcard-meta"><span>🏢 ${esc(r.company)}</span>${r.role?`<span>💼 ${esc(r.role)}</span>`:''}<span class="status-pill ${sm.cls}">${sm.label}</span>${di.label?`<span class="countdown ${di.cls}">${di.label}</span>`:''}</div>
+      ${tlHtml}
+      ${r.presTime?`<div class="note-box" style="border-left-color:#8B5CF6">🎤 ${esc(r.presTime)}</div>`:''}
+      ${r.note?`<div class="note-box">${esc(r.note)}</div>`:''}
+      <div class="rcard-footer"><span class="date-txt">收藏于 ${r.added||''}</span><div class="action-row">
+        <button class="action-btn" onclick="editRecruit(${r.id})">编辑</button>
+        <button class="action-btn del" onclick="deleteRecruit(${r.id})">删除</button>
+      </div></div></div>`;
+  }).join('');
+}
+function openRecruitModal(item){
+  editRcId=item?item.id:null;
+  document.getElementById('rModalTitle').textContent=item?'编辑招聘动态':'添加招聘动态';
+  document.getElementById('rType').value=item?.type||'recruit';
+  document.getElementById('rCompany').value=item?.company||'';
+  document.getElementById('rTitle').value=item?.title||'';
+  document.getElementById('rRole').value=item?.role||'';
+  document.getElementById('rStartDate').value=item?.startDate||'';
+  document.getElementById('rEndDate').value=item?.endDate||'';
+  document.getElementById('rPresTime').value=item?.presTime||'';
+  document.getElementById('rUrl').value=item?.url||'';
+  document.getElementById('rNote').value=item?.note||'';
+  document.getElementById('rModalBg').classList.add('open');
+}
+function editRecruit(id){openRecruitModal(recruits.find(r=>r.id===id));}
+function deleteRecruit(id){if(confirm('确定删除？')){recruits=recruits.filter(r=>r.id!==id);saveRCStore();render();}}
+function saveRecruit(){
+  const title=document.getElementById('rTitle').value.trim(),company=document.getElementById('rCompany').value.trim();
+  if(!title||!company){alert('请填写公司和标题');return;}
+  const obj={type:document.getElementById('rType').value,company,title,role:document.getElementById('rRole').value.trim(),startDate:document.getElementById('rStartDate').value,endDate:document.getElementById('rEndDate').value,presTime:document.getElementById('rPresTime').value.trim(),url:document.getElementById('rUrl').value.trim(),note:document.getElementById('rNote').value.trim()};
+  if(editRcId){const i=recruits.findIndex(r=>r.id===editRcId);recruits[i]={...recruits[i],...obj};}
+  else recruits.push({id:Date.now(),...obj,added:new Date().toISOString().slice(0,10)});
+  saveRCStore();closeModal('rModalBg');render();
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');}));
+
+load();render();
+</script>
+</body>
+</html>
